@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { assets } from '../assets/assets'; // Assicurati che il percorso sia corretto
+import { assets } from '../assets/assets';
 import { Link } from 'react-router-dom';
-import ResponsiveNavLink from "./ResponsiveNavLink"; // Ricorda che anche ResponsiveNavLink potrebbe contenere classi dark da rimuovere separatamente.
+import ResponsiveNavLink from "./ResponsiveNavLink";
+import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 
 // Esempio di icone (puoi usare le tue o una libreria come Heroicons)
 const SearchIcon = ({ className }) => <img src={assets.search_icon} className={className} alt="Cerca" />;
 const ProfileIcon = ({ className }) => <img src={assets.profile_icon} className={className} alt="Profilo" />;
 const CartIcon = ({ className }) => <img src={assets.cart_icon} className={className} alt="Carrello" />;
 const MenuIcon = ({ className }) => <img src={assets.menu_icon} className={className} alt="Apri menu" />;
-const CloseIcon = ({ className }) => <img src={assets.dropdown_icon} className={`${className} rotate-180`} alt="Chiudi menu" />;
 
 
 const Navbar = () => {
@@ -146,7 +146,7 @@ const Navbar = () => {
                     className='lg:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'
                 >
                     {isMobileMenuOpen
-                        ? <CloseIcon className='w-5 h-5 text-gray-600' />
+                        ? <ChevronLeftIcon className='w-5 h-5 text-gray-600' />
                         : <MenuIcon className='w-5 h-5 text-gray-600' />
                     }
                 </button>
@@ -176,7 +176,7 @@ const Navbar = () => {
                         aria-label="Chiudi menu"
                         className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-blue-500"
                     >
-                        <CloseIcon className='w-5 h-5 text-gray-600' />
+                        <ChevronLeftIcon className='w-5 h-5 text-gray-600' />
                     </button>
                 </div>
                 <nav className='py-2'>
