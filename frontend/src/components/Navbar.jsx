@@ -2,14 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { assets } from '../assets/assets';
 import { Link } from 'react-router-dom';
 import ResponsiveNavLink from "./ResponsiveNavLink";
-import { ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, MagnifyingGlassIcon, UserCircleIcon, Bars3Icon, ShoppingCartIcon} from '@heroicons/react/24/outline';
 
 // Esempio di icone (puoi usare le tue o una libreria come Heroicons)
-const SearchIcon = ({ className }) => <img src={assets.search_icon} className={className} alt="Cerca" />;
-const ProfileIcon = ({ className }) => <img src={assets.profile_icon} className={className} alt="Profilo" />;
-const CartIcon = ({ className }) => <img src={assets.cart_icon} className={className} alt="Carrello" />;
-const MenuIcon = ({ className }) => <img src={assets.menu_icon} className={className} alt="Apri menu" />;
-
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -79,9 +74,9 @@ const Navbar = () => {
                 <button
                     type="button"
                     aria-label="Cerca nel sito"
-                    className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
                 >
-                    <SearchIcon className="w-5 h-5 text-gray-600" />
+                    <MagnifyingGlassIcon className="w-6 h-6 text-gray-600" />
                 </button>
 
                 <div className='relative' ref={profileDropdownRef}>
@@ -91,9 +86,9 @@ const Navbar = () => {
                         aria-expanded={isProfileDropdownOpen}
                         aria-controls="profile-dropdown"
                         aria-label="Menu utente"
-                        className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
                     >
-                        <ProfileIcon className="w-5 h-5 text-gray-600" />
+                        <UserCircleIcon className="w-6 h-6 text-gray-600" />
                     </button>
                     {isProfileDropdownOpen && (
                         <div
@@ -130,7 +125,7 @@ const Navbar = () => {
                 </div>
 
                 <Link to="/cart" className='relative p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500' aria-label="Carrello, 10 articoli">
-                    <CartIcon className='w-5 h-5 text-gray-600' />
+                    <ShoppingCartIcon className='w-6 h-6 text-gray-600' />
                     <span className='absolute top-1 right-1 flex items-center justify-center w-4 h-4 bg-red-600 text-white text-[10px] rounded-full'>
                         10
                     </span>
@@ -146,8 +141,8 @@ const Navbar = () => {
                     className='lg:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'
                 >
                     {isMobileMenuOpen
-                        ? <ChevronLeftIcon className='w-5 h-5 text-gray-600' />
-                        : <MenuIcon className='w-5 h-5 text-gray-600' />
+                        ? <ChevronLeftIcon className='w-6 h-6 text-gray-600' />
+                        : <Bars3Icon className='w-6 h-6 text-gray-600' />
                     }
                 </button>
             </div>
@@ -176,7 +171,7 @@ const Navbar = () => {
                         aria-label="Chiudi menu"
                         className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-blue-500"
                     >
-                        <ChevronLeftIcon className='w-5 h-5 text-gray-600' />
+                        <ChevronLeftIcon className='w-6 h-6 text-gray-600' />
                     </button>
                 </div>
                 <nav className='py-2'>

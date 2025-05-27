@@ -8,7 +8,6 @@ const ResponsiveNavLink = ({ text, to, icon, variant = 'default', onNavigate }) 
         if (onNavigate) {
             onNavigate();
         }
-        // La navigazione avverrà comunque tramite NavLink
     };
 
     if (variant === 'mobile') {
@@ -19,7 +18,7 @@ const ResponsiveNavLink = ({ text, to, icon, variant = 'default', onNavigate }) 
                 className={({ isActive }) =>
                     `flex items-center gap-3 w-full text-left py-3 px-4 border-b border-gray-200
                     transition-colors duration-150 ease-in-out
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-gray-500 
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-gray-500 uppercase
                     ${isActive
                         ? 'bg-gray-100 text-gray-700 font-semibold border-l-4 border-l-gray-600'
                         : 'text-gray-700  hover:bg-gray-100 hover:text-gray-900'
