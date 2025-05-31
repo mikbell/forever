@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
 @import "tailwindcss";
 
-*{
+* {
     font-family: Outfit, sans-serif;
 }
 
@@ -9,4 +9,22 @@
     font-family: "Prata", serif;
     font-weight: 400;
     font-style: normal;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-in forwards;
 }

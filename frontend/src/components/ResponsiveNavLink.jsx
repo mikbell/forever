@@ -30,7 +30,7 @@ const ResponsiveNavLink = ({ text, to, icon, variant = 'default', onNavigate }) 
                         {icon && React.cloneElement(icon, {
                             className: `w-5 h-5 shrink-0 ${isActive ? 'text-gray-600 text-gray-400' : 'text-gray-500 text-gray-400'}`,
                         })}
-                        <span className="flex-grow">{text}</span>
+                        <span className="grow">{text}</span>
                     </>
                 )}
             </NavLink>

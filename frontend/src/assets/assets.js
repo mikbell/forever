@@ -103,7 +103,7 @@ export const products = [
         price: 100,
         image: [p_img1],
         category: "Women",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L"],
         date: 1716634345448,
         bestseller: true
@@ -115,7 +115,7 @@ export const products = [
         price: 200,
         image: [p_img2_1,p_img2_2,p_img2_3,p_img2_4],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["M", "L", "XL"],
         date: 1716621345448,
         bestseller: true
@@ -127,7 +127,7 @@ export const products = [
         price: 220,
         image: [p_img3],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "L", "XL"],
         date: 1716234545448,
         bestseller: true
@@ -139,7 +139,7 @@ export const products = [
         price: 110,
         image: [p_img4],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "XXL"],
         date: 1716621345448,
         bestseller: true
@@ -151,7 +151,7 @@ export const products = [
         price: 130,
         image: [p_img5],
         category: "Women",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["M", "L", "XL"],
         date: 1716622345448,
         bestseller: true
@@ -163,7 +163,7 @@ export const products = [
         price: 140,
         image: [p_img6],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "L", "XL"],
         date: 1716623423448,
         bestseller: true
@@ -175,7 +175,7 @@ export const products = [
         price: 190,
         image: [p_img7],
         category: "Men",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "L", "XL"],
         date: 1716621542448,
         bestseller: false
@@ -187,7 +187,7 @@ export const products = [
         price: 140,
         image: [p_img8],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716622345448,
         bestseller: false
@@ -199,7 +199,7 @@ export const products = [
         price: 100,
         image: [p_img9],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["M", "L", "XL"],
         date: 1716621235448,
         bestseller: false
@@ -211,7 +211,7 @@ export const products = [
         price: 110,
         image: [p_img10],
         category: "Men",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "L", "XL"],
         date: 1716622235448,
         bestseller: false
@@ -223,7 +223,7 @@ export const products = [
         price: 120,
         image: [p_img11],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L"],
         date: 1716623345448,
         bestseller: false
@@ -235,7 +235,7 @@ export const products = [
         price: 150,
         image: [p_img12],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716624445448,
         bestseller: false
@@ -247,7 +247,7 @@ export const products = [
         price: 130,
         image: [p_img13],
         category: "Women",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716625545448,
         bestseller: false
@@ -259,7 +259,7 @@ export const products = [
         price: 160,
         image: [p_img14],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716626645448,
         bestseller: false
@@ -271,7 +271,7 @@ export const products = [
         price: 140,
         image: [p_img15],
         category: "Men",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716627745448,
         bestseller: false
@@ -283,7 +283,7 @@ export const products = [
         price: 170,
         image: [p_img16],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716628845448,
         bestseller: false
@@ -295,7 +295,7 @@ export const products = [
         price: 150,
         image: [p_img17],
         category: "Men",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716629945448,
         bestseller: false
@@ -307,7 +307,7 @@ export const products = [
         price: 180,
         image: [p_img18],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716631045448,
         bestseller: false
@@ -319,7 +319,7 @@ export const products = [
         price: 160,
         image: [p_img19],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716632145448,
         bestseller: false
@@ -331,7 +331,7 @@ export const products = [
         price: 190,
         image: [p_img20],
         category: "Women",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716633245448,
         bestseller: false
@@ -343,7 +343,7 @@ export const products = [
         price: 170,
         image: [p_img21],
         category: "Women",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716634345448,
         bestseller: false
@@ -355,7 +355,7 @@ export const products = [
         price: 200,
         image: [p_img22],
         category: "Women",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716635445448,
         bestseller: false
@@ -367,7 +367,7 @@ export const products = [
         price: 180,
         image: [p_img23],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716636545448,
         bestseller: false
@@ -379,7 +379,7 @@ export const products = [
         price: 210,
         image: [p_img24],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716637645448,
         bestseller: false
@@ -391,7 +391,7 @@ export const products = [
         price: 190,
         image: [p_img25],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716638745448,
         bestseller: false
@@ -403,7 +403,7 @@ export const products = [
         price: 220,
         image: [p_img26],
         category: "Women",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716639845448,
         bestseller: false
@@ -415,7 +415,7 @@ export const products = [
         price: 200,
         image: [p_img27],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716640945448,
         bestseller: false
@@ -427,7 +427,7 @@ export const products = [
         price: 230,
         image: [p_img28],
         category: "Men",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716642045448,
         bestseller: false
@@ -439,7 +439,7 @@ export const products = [
         price: 210,
         image: [p_img29],
         category: "Women",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716643145448,
         bestseller: false
@@ -451,7 +451,7 @@ export const products = [
         price: 240,
         image: [p_img30],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716644245448,
         bestseller: false
@@ -463,7 +463,7 @@ export const products = [
         price: 220,
         image: [p_img31],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716645345448,
         bestseller: false
@@ -475,7 +475,7 @@ export const products = [
         price: 250,
         image: [p_img32],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716646445448,
         bestseller: false
@@ -487,7 +487,7 @@ export const products = [
         price: 230,
         image: [p_img33],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716647545448,
         bestseller: false
@@ -499,7 +499,7 @@ export const products = [
         price: 260,
         image: [p_img34],
         category: "Women",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716648645448,
         bestseller: false
@@ -511,7 +511,7 @@ export const products = [
         price: 240,
         image: [p_img35],
         category: "Women",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716649745448,
         bestseller: false
@@ -523,7 +523,7 @@ export const products = [
         price: 270,
         image: [p_img36],
         category: "Women",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716650845448,
         bestseller: false
@@ -535,7 +535,7 @@ export const products = [
         price: 250,
         image: [p_img37],
         category: "Women",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716651945448,
         bestseller: false
@@ -547,7 +547,7 @@ export const products = [
         price: 280,
         image: [p_img38],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716653045448,
         bestseller: false
@@ -559,7 +559,7 @@ export const products = [
         price: 260,
         image: [p_img39],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716654145448,
         bestseller: false
@@ -571,7 +571,7 @@ export const products = [
         price: 290,
         image: [p_img40],
         category: "Men",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716655245448,
         bestseller: false
@@ -583,7 +583,7 @@ export const products = [
         price: 270,
         image: [p_img41],
         category: "Men",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716656345448,
         bestseller: false
@@ -595,7 +595,7 @@ export const products = [
         price: 300,
         image: [p_img42],
         category: "Kids",
-        subCategory: "Topwear",
+        type: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716657445448,
         bestseller: false
@@ -607,7 +607,7 @@ export const products = [
         price: 280,
         image: [p_img43],
         category: "Kids",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716658545448,
         bestseller: false
@@ -619,7 +619,7 @@ export const products = [
         price: 310,
         image: [p_img44],
         category: "Women",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716659645448,
         bestseller: false
@@ -631,7 +631,7 @@ export const products = [
         price: 290,
         image: [p_img45],
         category: "Men",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716660745448,
         bestseller: false
@@ -643,7 +643,7 @@ export const products = [
         price: 320,
         image: [p_img46],
         category: "Men",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716661845448,
         bestseller: false
@@ -655,7 +655,7 @@ export const products = [
         price: 300,
         image: [p_img47],
         category: "Kids",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716662945448,
         bestseller: false
@@ -667,7 +667,7 @@ export const products = [
         price: 330,
         image: [p_img48],
         category: "Men",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716664045448,
         bestseller: false
@@ -679,7 +679,7 @@ export const products = [
         price: 310,
         image: [p_img49],
         category: "Kids",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716665145448,
         bestseller: false
@@ -691,7 +691,7 @@ export const products = [
         price: 340,
         image: [p_img50],
         category: "Kids",
-        subCategory: "Bottomwear",
+        type: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716666245448, bestseller: false
     },
@@ -702,7 +702,7 @@ export const products = [
         price: 320,
         image: [p_img51],
         category: "Women",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716667345448,
         bestseller: false
@@ -714,7 +714,7 @@ export const products = [
         price: 350,
         image: [p_img52],
         category: "Men",
-        subCategory: "Winterwear",
+        type: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716668445448,
         bestseller: false

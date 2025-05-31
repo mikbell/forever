@@ -13,7 +13,7 @@ const LatestCollection = () => {
     }, [products]);
 
     return (
-        <section className="my-12 py-8 sm:my-16 sm:py-12 px-4 sm:px-6 lg:px-8 bg-gray-50" aria-labelledby="latest-collection-title">
+        <section className="my-12 py-8 sm:my-16 sm:py-12 px-4 sm:px-6 lg:px-8" aria-labelledby="latest-collection-title">
             <div className="text-center mb-10 md:mb-14">
                 <Title
                     text1={"Our Latest"}
@@ -30,8 +30,8 @@ const LatestCollection = () => {
                 <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-5 gap-y-8 sm:gap-x-6 sm:gap-y-10">
                     {latestProducts.map((item) => (
                         <ProductItem
-                            key={item.id}
-                            id={item.id}
+                            key={item._id}
+                            id={item._id}
                             image={item.image}
                             name={item.name}
                             price={item.price}

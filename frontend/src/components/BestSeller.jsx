@@ -32,8 +32,8 @@ const BestSeller = () => {
                 <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-5 gap-y-8 sm:gap-x-6 sm:gap-y-10">
                     {bestSellerProducts.map((item) => (
                         <ProductItem
-                            key={item.id}
-                            id={item.id}
+                            key={item._id}
+                            id={item._id}
                             name={item.name}
                             image={item.image}
                             price={item.price}

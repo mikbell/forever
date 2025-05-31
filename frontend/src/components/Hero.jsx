@@ -1,6 +1,6 @@
 import React from 'react';
-import { assets } from '../assets/assets'; // Assicurati che il percorso sia corretto
-import { Link } from 'react-router-dom'; // Importa Link per il Call to Action
+import { assets } from '../assets/assets';
+import Button from './Button';
 
 const Hero = () => {
     return (
@@ -22,27 +22,31 @@ const Hero = () => {
                     </h1>
 
                     <div className='mt-4 sm:mt-6'>
-                        <Link
-                            to="/collection" // Aggiorna questo al tuo percorso corretto
-                            className="inline-flex items-center group gap-3 uppercase font-semibold text-sm md:text-base tracking-wide
-                                       bg-[#333333] hover:bg-[#222222] text-white
-                                       py-3 px-8 rounded-sm shadow-md
-                                       transition-all duration-150 ease-in-out
-                                       focus:outline-none focus-visible:ring-2 focus-visible:ring-[#414141] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        <Button
+                            to="/collection"
+                            variant="primary"
+                            size="md"
+                            iconRight={
+                                <span
+                                    className='block w-10 md:w-12 h-[2px] bg-white 
+                                               transform scale-x-50 group-hover:scale-x-100 
+                                               transition-transform duration-200 ease-in-out origin-left 
+                                               group-focus-visible:scale-x-100'
+                                />
+                            }
+                            className="uppercase tracking-wide 
+                                       py-3 px-8  
+                                       text-sm md:text-base 
+                                       group"
                         >
                             Shop now
-                            <span className='block w-10 md:w-12 h-0.5 bg-white
-                                           transform scale-x-50 group-hover:scale-x-100 transition-transform duration-200 ease-in-out origin-left group-focus-visible:scale-x-100'></span>
-                            {/* Alternativa con icona:
-                            <svg className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                            */}
-                        </Link>
+                        </Button>
                     </div>
                 </div>
             </div>
 
             {/* Hero right - Immagine */}
-            <div className="w-full sm:w-1/2 h-64 sm:h-auto"> {/* Altezza definita per mobile, auto per desktop */}
+            <div className="w-full sm:w-1/2 h-64 sm:h-auto">
                 <img
                     src={assets.hero_img}
                     alt="Modella che indossa i capi della nuova collezione 'Latest Arrivals'"
