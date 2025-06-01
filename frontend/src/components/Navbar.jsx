@@ -44,6 +44,7 @@ const Navbar = ({ navbarRef }) => { // Accetta navbarRef come prop
     ];
 
     const profileActions = [
+        { label: "Login", href: "/auth" },
         { label: "Il mio profilo", href: "/profile" },
         { label: "Ordini", href: "/orders" },
         { label: "Logout", action: () => { console.log("Logout eseguito"); setIsProfileDropdownOpen(false); } },
@@ -78,7 +79,7 @@ const Navbar = ({ navbarRef }) => { // Accetta navbarRef come prop
                         onClick={() => setShowSearch(true)}
                         type="button"
                         aria-label="Cerca nel sito"
-                        className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+                        className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 cursor-pointer"
                     >
                         <Search className="w-6 h-6 text-gray-600" />
                     </button>
@@ -90,14 +91,14 @@ const Navbar = ({ navbarRef }) => { // Accetta navbarRef come prop
                             aria-expanded={isProfileDropdownOpen}
                             aria-controls="profile-dropdown"
                             aria-label="Menu utente"
-                            className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+                            className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 cursor-pointer"
                         >
                             <CircleUserRound className="w-6 h-6 text-gray-600" />
                         </button>
                         {isProfileDropdownOpen && (
                             <div
                                 id="profile-dropdown"
-                                className='absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-xl ring-1 ring-black ring-opacity-5 py-1'
+                                className='absolute z-20 right-0 mt-2 w-48 bg-white shadow-xl py-1'
                                 role="menu"
                                 aria-orientation="vertical"
                                 aria-labelledby="user-menu-button"
@@ -128,7 +129,7 @@ const Navbar = ({ navbarRef }) => { // Accetta navbarRef come prop
                         )}
                     </div>
 
-                    <Link to="/cart" className='relative p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500' aria-label="Carrello, 10 articoli">
+                    <Link to="/cart" className='relative p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500' aria-label="Carrello, 10 articoli">
                         <ShoppingCart className='w-6 h-6 text-gray-600' />
                         <span className='absolute top-1 right-1 flex items-center justify-center w-4 h-4 bg-black text-white text-[10px] rounded-full'>
                             {getCartCount()}
@@ -142,7 +143,7 @@ const Navbar = ({ navbarRef }) => { // Accetta navbarRef come prop
                         aria-expanded={isMobileMenuOpen}
                         aria-controls="mobile-menu-sidebar"
                         aria-label={isMobileMenuOpen ? "Chiudi menu navigazione" : "Apri menu navigazione"}
-                        className='lg:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'
+                        className='lg:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500'
                     >
                         {isMobileMenuOpen
                             ? <ChevronLeft className='w-6 h-6 text-gray-600' />
@@ -173,7 +174,7 @@ const Navbar = ({ navbarRef }) => { // Accetta navbarRef come prop
                             type="button"
                             onClick={closeMobileMenu}
                             aria-label="Chiudi menu"
-                            className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-blue-500"
+                            className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-gray-500"
                         >
                             <ChevronLeft className='w-6 h-6 text-gray-600' />
                         </button>
