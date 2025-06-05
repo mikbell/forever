@@ -66,10 +66,7 @@ const Collection = () => {
   const [searchParams] = useSearchParams(); // Get URL search parameters
   const initialSearchTerm = searchParams.get('q') || ''; // Get the initial search term from URL
 
-  // Effect to apply initial search term from URL
   useEffect(() => {
-    // No need to set a state for `search` here as it's directly used in `processedProducts`
-    // We just ensure `initialSearchTerm` is read correctly in the `useMemo` dependency.
   }, [initialSearchTerm]);
 
   const handleCategoryChange = useCallback((categoryValue) => {
@@ -153,7 +150,7 @@ const Collection = () => {
   // Close mobile filter when route changes (e.g., from search)
   useEffect(() => {
     setIsMobileFilterOpen(false);
-  }, [initialSearchTerm]); // Close if search term changes
+  }, [initialSearchTerm, selectedCategories, selectedTypes, currentSortOption, products]); // Close if search term changes
 
   const filterPanelContent = (
     <div className="divide-y divide-gray-200">
@@ -287,7 +284,7 @@ const Collection = () => {
                   <ProductItem
                     key={item._id}
                     id={item._id}
-                    image={item.image}
+                    images={item.images}
                     name={item.name}
                     price={item.price}
                   />

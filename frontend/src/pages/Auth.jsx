@@ -1,49 +1,65 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Importa useNavigate
+import React, { useState, useContext, useEffect, useCallback } from 'react'; // Importa useCallback
+import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
-import { ShopContext } from '../context/ShopContext'; // Se hai logica di autenticazione qui
+import { ShopContext } from '../context/ShopContext';
+import axios from 'axios';
 
-const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice funzionalità
-  const [name, setName] = useState(''); // Nuovo stato per il nome (solo per Sign up)
+const Auth = () => {
+  // Form states
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [nameError, setNameError] = useState(''); // Nuovo stato per l'errore del nome
+
+  // Error states for form fields
+  const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  // UI states
   const [isLoading, setIsLoading] = useState(false);
-  const [currentState, setCurrentState] = useState('Login'); // Inizializzato a 'Login' per default
 
-  const navigate = useNavigate();
-  // Se hai funzioni di autenticazione nel tuo ShopContext (es. `loginUser`, `registerUser`),
-  // puoi decommentarle e usarle qui invece delle simulazioni.
-  // const { loginUser, registerUser } = useContext(ShopContext);
+  // Inizializza con 'Login' o 'Register' basandosi sul parametro URL
+  const [searchParams] = useSearchParams();
+  // Utilizza una funzione per l'inizializzazione dello stato per garantire che venga eseguita solo una volta
+  const [currentState, setCurrentState] = useState(() => {
+    const initialMode = searchParams.get('mode');
+    return initialMode === 'register' ? 'Register' : 'Login';
+  });
 
-  // Funzione per resettare il form e gli errori quando si cambia stato
-  const resetForm = () => {
+  // Context values
+  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+
+  // Utilizza useCallback per memoizzare la funzione e prevenire re-rendering inutili
+  const resetForm = useCallback(() => {
     setName('');
     setEmail('');
     setPassword('');
     setNameError('');
     setEmailError('');
     setPasswordError('');
-    setIsLoading(false);
-  };
+    // Non resettare isLoading qui, è gestito dal handleSubmit
+  }, []); // Non ha dipendenze, quindi non cambierà mai
 
-  // Gestore per il cambio di stato (Login/Sign up)
-  const toggleAuthState = (state) => {
+  // Gestore per il cambio di stato (Login/Register)
+  // Utilizza useCallback per memoizzare la funzione
+  const toggleAuthState = useCallback((state) => {
     setCurrentState(state);
     resetForm(); // Resetta il form quando si cambia modalità
-  };
+    // Aggiorna l'URL per riflettere la modalità
+    navigate(`/auth?mode=${state.toLowerCase()}`, { replace: true });
+  }, [resetForm, navigate]); // Dipende da resetForm e navigate
 
-  const validateForm = () => {
+  // Frontend form validation
+  const validateForm = useCallback(() => {
     let isValid = true;
+    // Resetta tutti gli errori prima di validare
     setNameError('');
     setEmailError('');
     setPasswordError('');
 
-    if (currentState === 'Sign up' && !name.trim()) {
+    if (currentState === 'Register' && !name.trim()) {
       setNameError('Il nome è obbligatorio.');
       isValid = false;
     }
@@ -65,63 +81,103 @@ const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice fun
     }
 
     return isValid;
-  };
+  }, [name, email, password, currentState]); // Dipende dagli stati del form e dal currentState
 
+  // Handles form submission (Login or Register)
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Esegui la validazione frontend
+    if (!validateForm()) {
+      toast.error('Compila tutti i campi obbligatori e correggi gli errori.');
+      return;
+    }
+
     setIsLoading(true);
 
-    if (validateForm()) {
-      try {
-        let response;
-        if (currentState === 'Login') {
-          // Logica di Login
-          // response = await loginUser(email, password); // Se usi ShopContext
-          response = await new Promise(resolve => setTimeout(() => {
-            if (email === 'test@example.com' && password === 'password123') {
-              resolve({ success: true, message: 'Accesso effettuato con successo!' });
-            } else {
-              resolve({ success: false, message: 'Email o password non validi.' });
-            }
-          }, 1500));
-        } else {
-          // Logica di Sign up
-          // response = await registerUser(name, email, password); // Se usi ShopContext
-          response = await new Promise(resolve => setTimeout(() => {
-            if (name.trim() && email.trim() && password.length >= 6) {
-              resolve({ success: true, message: 'Registrazione effettuata con successo! Ora puoi accedere.' });
-            } else {
-              resolve({ success: false, message: 'Errore durante la registrazione. Riprova.' });
-            }
-          }, 1500));
-        }
-
-        if (response.success) {
-          toast.success(response.message);
-          navigate('/'); // Reindirizza alla homepage dopo successo
-        } else {
-          toast.error(response.message);
-        }
-      } catch (error) {
-        console.error(`Errore durante ${currentState}:`, error);
-        toast.error("Si è verificato un errore. Riprova più tardi.");
+    try {
+      let response;
+      const payload = { email, password };
+      if (currentState === 'Register') {
+        payload.name = name; // Aggiungi il nome solo per la registrazione
+        response = await axios.post(`${backendUrl}/api/user/register`, payload); // Rimosso withCredentials se non gestisci sessioni basate su cookie
+      } else {
+        response = await axios.post(`${backendUrl}/api/user/login`, payload); // Rimosso withCredentials
       }
+
+      if (response.data.success) {
+        setToken(response.data.token);
+        // Il token è già salvato in localStorage nel ShopContext (useEffect in ShopContextProvider)
+        toast.success(response.data.message);
+        navigate('/');
+      } else {
+        // Gestione specifica degli errori dal backend (es. email già registrata, credenziali errate)
+        if (response.data.message.includes('Email already registered')) {
+          setEmailError('Questa email è già registrata.');
+        } else if (response.data.message.includes('Invalid credentials')) {
+          setEmailError('Credenziali non valide.');
+          setPasswordError('Credenziali non valide.');
+        }
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Backend Error:', error.response.data);
+        // Puoi aggiungere una logica più specifica per gli errori 400, 401, ecc.
+        if (error.response.status === 400 && error.response.data.message) {
+          // Esempio: se il backend invia errori di validazione specifici nel messaggio
+          if (error.response.data.message.includes('Email non valida')) {
+            setEmailError('Email non valida.');
+          } else if (error.response.data.message.includes('Password troppo corta')) {
+            setPasswordError('Password troppo corta.');
+          } else if (error.response.data.message.includes('Nome obbligatorio')) {
+            setNameError('Il nome è obbligatorio.');
+          }
+        }
+        toast.error(error.response.data.message || 'Errore dal server.');
+      } else if (axios.isAxiosError(error) && error.request) {
+        console.error('Network Error:', error.request);
+        toast.error('Errore di rete. Controlla la tua connessione.');
+      } else {
+        console.error('General Error:', error.message);
+        toast.error('Si è verificato un errore inaspettato.');
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
+  // Effect to redirect if token is present (user is already logged in)
+  useEffect(() => {
+    if (token) {
+      navigate('/');
+      toast.info('Sei già loggato.'); // Messaggio informativo per l'utente
+    }
+  }, [token, navigate]); // Dipende da token e navigate
+
+  // Effect to update currentState if URL parameter changes
+  useEffect(() => {
+    const modeFromUrl = searchParams.get('mode');
+    // Aggiorna lo stato solo se è diverso, per evitare loop o re-rendering inutili
+    if (modeFromUrl === 'register' && currentState !== 'Register') {
+      toggleAuthState('Register');
+    } else if (modeFromUrl !== 'register' && currentState !== 'Login') {
+      toggleAuthState('Login');
+    }
+  }, [searchParams, currentState, toggleAuthState]); // Dipende da searchParams, currentState e toggleAuthState (memoizzata)
+
   return (
-    <div className='min-h-[80vh] flex items-center justify-center'>
+    <div className='container mx-auto px-4 py-8 md:py-12 min-h-[80vh] flex items-center justify-center'>
       <div className='w-full max-w-md bg-white p-8 rounded-lg shadow-xl border border-gray-100'>
         <div className='mb-8 text-center'>
-          <p className='text-3xl font-bold text-gray-800'>{currentState}</p> {/* Titolo dinamico */}
+          <p className='text-3xl font-bold text-gray-800'>{currentState}</p>
           <p className="text-gray-600 mt-2">
             {currentState === 'Login' ? 'Accedi al tuo account per continuare.' : 'Crea un nuovo account per iniziare.'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
-          {currentState === 'Sign up' && ( // Campo Nome solo per Sign up
+          {currentState === 'Register' && (
             <TextInput
               id="name"
               name="name"
@@ -129,7 +185,7 @@ const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice fun
               type="text"
               placeholder="Il tuo nome"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => { setName(e.target.value); setNameError(''); }}
               error={nameError}
               disabled={isLoading}
             />
@@ -141,7 +197,7 @@ const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice fun
             type="email"
             placeholder="La tua email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); setEmailError(''); }}
             error={emailError}
             disabled={isLoading}
           />
@@ -152,12 +208,12 @@ const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice fun
             type="password"
             placeholder="La tua password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => { setPassword(e.target.value); setPasswordError(''); }}
             error={passwordError}
             disabled={isLoading}
           />
 
-          {currentState === 'Login' && ( // Opzioni Login-specifiche
+          {currentState === 'Login' && (
             <div className="flex justify-between items-center text-sm mt-1">
               <div className="flex items-center">
                 <input
@@ -191,7 +247,7 @@ const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice fun
               Non hai un account?{' '}
               <button
                 type="button"
-                onClick={() => toggleAuthState('Sign up')}
+                onClick={() => toggleAuthState('Register')}
                 className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 font-medium cursor-pointer"
               >
                 Registrati ora
@@ -215,4 +271,4 @@ const Auth = () => { // Rinominato da Login a Auth per riflettere la duplice fun
   );
 };
 
-export default Auth; // Esporta come Auth
+export default Auth;

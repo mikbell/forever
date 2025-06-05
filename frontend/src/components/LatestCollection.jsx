@@ -9,7 +9,12 @@ const LatestCollection = () => {
         if (!products || products.length === 0) {
             return [];
         }
-        return products.slice(0, 10);
+        const sortedProducts = [...products].sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return dateB.getTime() - dateA.getTime();
+        });
+        return sortedProducts.slice(0, 10);
     }, [products]);
 
     return (
@@ -32,7 +37,7 @@ const LatestCollection = () => {
                         <ProductItem
                             key={item._id}
                             id={item._id}
-                            image={item.image}
+                            images={item.images}
                             name={item.name}
                             price={item.price}
                         />

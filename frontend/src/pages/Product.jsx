@@ -9,16 +9,20 @@ import Title from '../components/Title'; // Assuming you have a Title component
 const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart } = useContext(ShopContext);
-  const [productData, setProductData] = useState(null); // Initialize with null for proper loading state
-  const [mainImage, setMainImage] = useState(''); // Renamed for clarity
-  const [selectedSize, setSelectedSize] = useState(''); // Renamed for clarity
-  const [activeTab, setActiveTab] = useState('description'); // For Description/Reviews tabs
+  const [productData, setProductData] = useState(null);
+  const [mainImage, setMainImage] = useState('');
+  const [selectedSize, setSelectedSize] = useState('');
+  const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
     const foundProduct = products.find(item => item._id === productId);
     if (foundProduct) {
       setProductData(foundProduct);
-      setMainImage(foundProduct.image[0]);
+      if (foundProduct.images && foundProduct.images.length > 0) {
+        setMainImage(foundProduct.images[0]);
+      } else {
+        setMainImage('https://placehold.co/600x400/CCCCCC/333333?text=No+Image');
+      }
     } else {
       setProductData(null);
     }
@@ -29,25 +33,38 @@ const Product = () => {
   }
 
   return (
-    <div className='animate-fadeIn'>
+    <div className='container mx-auto px-4 py-8 md:py-12 animate-fadeIn'> {/* Added container, padding, and fade-in animation */}
+      {/* Product Details Section */}
       <div className='flex flex-col md:flex-row gap-8 md:gap-16 lg:gap-20'>
 
+        {/* Product Images - Left Column */}
         <div className='flex-1 flex flex-col-reverse gap-4 md:flex-row md:gap-4 lg:gap-6'>
-          <div className='flex md:flex-col overflow-x-auto md:overflow-y-auto justify-start md:justify-start md:w-28 w-full gap-3 md:gap-4 no-scrollbar'>
-            {productData.image.map((imgSrc, index) => (
+          {/* Thumbnail Images */}
+          <div className='flex md:flex-col overflow-x-auto md:overflow-y-auto justify-start md:justify-start md:w-28 w-full gap-3 md:gap-4 no-scrollbar'> {/* no-scrollbar assumes a custom utility or CSS */}
+            {productData.images && productData.images.length > 0 ? (
+              productData.images.map((imgSrc, index) => (
+                <img
+                  key={index}
+                  onClick={() => setMainImage(imgSrc)}
+                  src={imgSrc}
+                  alt={`Product thumbnail ${index + 1}`}
+                  className={`
+                                        w-20 h-20 md:w-full md:h-auto object-cover shadow-sm cursor-pointer
+                                        transition-all duration-200 ease-in-out
+                                        ${imgSrc === mainImage ? 'border-2 border-gray-300' : 'border-transparent'}
+                                    `}
+                />
+              ))
+            ) : (
               <img
-                key={index}
-                onClick={() => setMainImage(imgSrc)}
-                src={imgSrc}
-                alt={`Product thumbnail ${index + 1}`}
-                className={`
-                                    w-20 h-20 md:w-full md:h-auto object-cover shadow-sm cursor-pointer
-                                    transition-all duration-200 ease-in-out
-                                `}
+                src="https://placehold.co/80x80/CCCCCC/333333?text=No+Img"
+                alt="No thumbnail available"
+                className="w-20 h-20 md:w-full md:h-auto object-cover shadow-sm"
               />
-            ))}
+            )}
           </div>
-          <div className='flex-grow md:w-auto h-auto min-h-[300px] flex items-center justify-center bg-gray-100 overflow-hidden'>
+          {/* Main Product Image */}
+          <div className='flex-grow md:w-auto h-auto min-h-[300px] flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden'>
             <img
               className='w-full h-auto max-h-[600px] object-contain transition-transform duration-300 ease-in-out transform hover:scale-105'
               src={mainImage}
@@ -56,20 +73,21 @@ const Product = () => {
           </div>
         </div>
 
-        <div className='flex-1 p-2 md:p-0'>
+        {/* Product Info - Right Column */}
+        <div className='flex-1 p-2 md:p-0'> {/* Added padding for consistency */}
           <h1 className='font-bold text-3xl md:text-4xl leading-tight mb-2 text-gray-800'>{productData.name}</h1>
 
           {/* Ratings */}
           <div className="flex items-center gap-1 text-yellow-500 mb-4">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-current" /> // Fill stars
+              <Star key={i} className="w-5 h-5 fill-current" />
             ))}
             <p className='ml-2 text-sm text-gray-600'>(122 Recensioni)</p>
           </div>
 
           {/* Price */}
           <p className='mt-3 text-4xl font-extrabold text-gray-900'>
-            {currency}{productData.price.toFixed(2)} {/* Format price */}
+            {currency}{productData.price.toFixed(2)}
           </p>
 
           {/* Description */}
@@ -81,13 +99,15 @@ const Product = () => {
           {productData.sizes && productData.sizes.length > 0 && (
             <div className="my-8">
               <p className='text-lg font-semibold text-gray-800 mb-3'>Seleziona Taglia</p>
-              <div className='flex flex-wrap gap-3'> {/* Use flex-wrap for smaller screens */}
+              <div className='flex flex-wrap gap-3'>
                 {productData.sizes.map((item, index) => (
                   <Button
                     key={index}
                     onClick={() => setSelectedSize(item)}
                     isActive={item === selectedSize}
-                    variant='secondary'
+                    variant='secondary' // Assuming secondary variant has appropriate active styles
+                    size='md' // Ensure consistent size
+                    className="py-2 px-5 text-sm font-medium" // Override Button's default padding for size buttons
                   >
                     {item}
                   </Button>
@@ -100,8 +120,7 @@ const Product = () => {
           <Button
             onClick={() => addToCart(productData._id, selectedSize)}
             disabled={!selectedSize && productData.sizes && productData.sizes.length > 0}
-            iconRight={<ShoppingCart />}
-            className="mt-6 px-8"
+            iconRight={<ShoppingCart className="w-5 h-5" />}
           >
             Aggiungi al carrello
           </Button>
@@ -144,23 +163,20 @@ const Product = () => {
         <div className="p-6 bg-gray-50 border border-t-0 border-gray-200 rounded-b-lg text-sm text-gray-700 leading-relaxed">
           {activeTab === 'description' && (
             <div className="flex flex-col gap-4">
-              <p>{productData.description}</p> {/* Using actual description here */}
-              {/* You can add more detailed description paragraphs if available in productData */}
+              <p>{productData.description}</p>
               <p>Questo prodotto è realizzato con materiali di alta qualità per garantire durata e comfort. Perfetto per ogni occasione, combina stile e funzionalità in un design unico.</p>
             </div>
           )}
           {activeTab === 'reviews' && (
             <div>
-              {/* Placeholder for reviews content */}
               <p>Non ci sono ancora recensioni per questo prodotto. Sii il primo a lasciare una recensione!</p>
-              {/* In a real app, you'd map through productData.reviews here */}
             </div>
           )}
         </div>
       </div>
 
       {/* Related Products Section */}
-      <div className='mt-24'> {/* Increased top margin for separation */}
+      <div className='mt-24'>
         <RelatedProducts category={productData.category} type={productData.type} productId={productData._id} />
       </div>
     </div>
