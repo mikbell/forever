@@ -19,11 +19,17 @@ import orderRouter from "./routes/order.route.js";
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.set("trust proxy", 1);
+
 // --- Connessioni a Servizi Esterni ---
 connectDB();
 connectCloudinary();
 
-app.post("/api/order/verify", express.raw({ type: "application/json" }), verifyOrder);
+app.post(
+	"/api/order/verify",
+	express.raw({ type: "application/json" }),
+	verifyOrder
+);
 
 // --- Middleware di Sicurezza e Logging ---
 app.use(helmet()); // Imposta vari header HTTP per la sicurezza
