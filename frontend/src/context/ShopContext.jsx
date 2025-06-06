@@ -36,7 +36,7 @@ const ShopContextProvider = (props) => {
                 setProducts(response.data.products);
             } else {
                 // Logga l'errore per il debug e mostra un toast all'utente
-                console.error("Error fetching products:", response.data.message);
+                console.error("Errore nel caricamento dei prodotti:", response.data.message);
                 toast.error(`Errore nel caricamento dei prodotti: ${response.data.message}`);
             }
         } catch (error) {
