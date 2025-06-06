@@ -13,6 +13,20 @@ import productRouter from "./routes/product.route.js";
 import cartRouter from "./routes/cart.route.js";
 import orderRouter from "./routes/order.route.js";
 
+// Gestore per errori sincroni non catturati
+process.on("uncaughtException", (error) => {
+	console.error("ERRORE NON CATTURATO (UNCAUGHT EXCEPTION)!", error);
+	process.exit(1);
+});
+
+// Gestore per promesse non gestite (errori async)
+process.on("unhandledRejection", (reason, promise) => {
+	console.error(
+		"RIFIUTO PROMESSA NON GESTITO (UNHANDLED REJECTION)!",
+		reason
+	);
+});
+
 // --- Configurazione App ---
 const app = express();
 const port = process.env.PORT || 5000;
