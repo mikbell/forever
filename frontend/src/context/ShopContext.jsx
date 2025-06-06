@@ -1,14 +1,13 @@
 import { createContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../../api/axios.js'; // Importa la tua istanza Axios configurata
 
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
     const currency = "€";
     const delivery_fee = 10;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState('');
@@ -32,7 +31,7 @@ const ShopContextProvider = (props) => {
     // Funzione per recuperare i prodotti dal backend
     const getProductsData = async () => {
         try {
-            const response = await axios.get(`${backendUrl}/api/product`);
+            const response = await apiClient.get(`/api/product`);
             if (response.data.success) {
                 setProducts(response.data.products);
             } else {
@@ -49,26 +48,6 @@ const ShopContextProvider = (props) => {
         }
     };
 
-    // Funzione per caricare il carrello dell'utente dal backend
-    const getCart = async (userToken) => {
-        if (!userToken) {
-            setCartItems({});
-            return;
-        }
-        try {
-            const response = await axios.post(`${backendUrl}/api/cart/get`, {}, { headers: { token: userToken } });
-            if (response.data.success) {
-                setCartItems(response.data.cartData);
-            } else {
-                console.error("Error loading cart data:", response.data.message);
-                toast.error("Errore nel caricamento del carrello.");
-            }
-        } catch (error) {
-            console.error("Network error loading cart data:", error);
-            toast.error("Errore di rete durante il caricamento del carrello.");
-            setCartItems({});
-        }
-    };
 
     // Effetto per caricare i prodotti all'avvio del componente
     useEffect(() => {
@@ -83,14 +62,35 @@ const ShopContextProvider = (props) => {
             getCart(token);
         } else {
             localStorage.removeItem('token'); // Rimuovi il token se l'utente si è sloggato
-            setCartItems({}); // Svuota il carrello locale
+            setCartItems({});
         }
-    }, [token, backendUrl]); // Dipende da `token` e `backendUrl`. `getCart` è stabile e non deve essere inclusa.
+    }, [token,]);
 
 
     // ---
     // ## Funzioni di Gestione Carrello (Locale e Backend)
     // ---
+
+    const getCart = async (userToken) => {
+        if (!userToken) {
+            setCartItems({});
+            return;
+        }
+        try {
+            const response = await apiClient.post("/api/cart/get");
+            if (response.data.success) {
+                setCartItems(response.data.cartData);
+                console.log("Cart data fetched successfully:", response.data.cartData); // Aggiungi questo
+            } else {
+                console.error("Error loading cart data:", response.data.message);
+                toast.error("Errore nel caricamento del carrello.");
+            }
+        } catch (error) {
+            console.error("Network error loading cart data:", error);
+            toast.error("Errore di rete durante il caricamento del carrello.");
+            setCartItems({});
+        }
+    };
 
     const addToCart = async (itemId, size) => {
         if (!size) {
@@ -98,29 +98,30 @@ const ShopContextProvider = (props) => {
             return;
         }
 
-        const currentCart = structuredClone(cartItems);
-        if (!currentCart[itemId]) {
-            currentCart[itemId] = {};
-        }
-        currentCart[itemId][size] = (currentCart[itemId][size] || 0) + 1;
+        let cartData = structuredClone(cartItems);
 
-        setCartItems(currentCart); // Aggiorna lo stato locale immediatamente
+        if (cartData[itemId]) {
+            if (cartData[itemId][size]) {
+                cartData[itemId][size] += 1;
+            } else {
+                cartData[itemId][size] = 1
+            }
+        } else {
+            cartData[itemId] = {};
+            cartData[itemId][size] = 1;
+        }
+        setCartItems(cartData);
 
         if (token) {
             try {
-                // Invia solo i dati necessari al backend
-                await axios.post(`${backendUrl}/api/cart/add`, { itemId, size }, { headers: { token } });
-                toast.success("Prodotto aggiunto al carrello!");
+                await apiClient.post("/api/cart/add", { itemId, size })
             } catch (error) {
-                console.error("Error adding item to backend cart:", error);
-                toast.error("Errore durante l'aggiunta al carrello sul server.");
-                // Se il backend fallisce, potresti voler ripristinare lo stato precedente
-                getCart(token); // Ricarica il carrello dal backend per assicurare consistenza
+                console.log(error);
+                toast.error(error.message);
             }
-        } else {
-            toast.success("Prodotto aggiunto al carrello (locale)."); // Messaggio per utente non loggato
         }
     };
+
 
 
     const updateCart = async (itemId, size, quantity) => {
@@ -153,15 +154,49 @@ const ShopContextProvider = (props) => {
         if (token) {
             try {
                 // Manda l'aggiornamento della quantità al backend
-                await axios.post(`${backendUrl}/api/cart/update`, { itemId, size, quantity: parsedQuantity }, { headers: { token } });
-                toast.success("Quantità aggiornata.");
+                await apiClient.post(`/api/cart/update`, { itemId, size, quantity: parsedQuantity },);
             } catch (error) {
                 console.error("Error updating item quantity in backend:", error);
                 toast.error("Errore durante l'aggiornamento della quantità sul server.");
                 getCart(token); // Ricarica il carrello dal backend per assicurare consistenza
             }
+        }
+    };
+
+    const removeFromCart = async (itemId, size) => {
+        const currentCart = structuredClone(cartItems);
+        if (currentCart[itemId] && currentCart[itemId][size]) {
+            delete currentCart[itemId][size];
+            if (Object.keys(currentCart[itemId]).length === 0) {
+                delete currentCart[itemId];
+            }
+            setCartItems(currentCart);
+            if (token) {
+                try {
+                    await apiClient.post("/api/cart/remove", { itemId, size });
+                } catch (error) {
+                    console.error("Error removing item from cart in backend:", error);
+                    toast.error("Errore durante la rimozione dell'articolo dal carrello.");
+                    getCart(token); // Ricarica il carrello dal backend per assicurare consistenza
+                }
+            }
+        }
+    }
+
+    const clearCart = async () => {
+        setCartItems({}); // Svuota il carrello locale
+
+        if (token) {
+            try {
+                await apiClient.post("/api/cart/clear");
+                toast.success("Carrello svuotato e sincronizzato!");
+            } catch (error) {
+                console.error("Error clearing backend cart:", error);
+                toast.error("Errore durante lo svuotamento del carrello sul server.");
+                getCart(token);
+            }
         } else {
-            toast.success("Quantità aggiornata (locale)."); // Messaggio per utente non loggato
+            toast.success("Carrello svuotato!");
         }
     };
 
@@ -195,25 +230,6 @@ const ShopContextProvider = (props) => {
         return totalAmount;
     };
 
-    const clearCart = async () => {
-        setCartItems({}); // Svuota il carrello locale
-
-        if (token) {
-            try {
-                // Invia una richiesta al backend per svuotare il carrello dell'utente
-                await axios.post(`${backendUrl}/api/cart/clear-cart`, {}, { headers: { token } }); // Assumi un endpoint clear-cart
-                toast.success("Carrello svuotato e sincronizzato!");
-            } catch (error) {
-                console.error("Error clearing backend cart:", error);
-                toast.error("Errore durante lo svuotamento del carrello sul server.");
-                // In caso di errore, potresti voler ricaricare il carrello dal backend per consistenza
-                getCart(token);
-            }
-        } else {
-            toast.success("Carrello svuotato!"); // Messaggio per utente non loggato
-        }
-    };
-
     // ---
     // ## Valore del Context
     // ---
@@ -224,17 +240,16 @@ const ShopContextProvider = (props) => {
         delivery_fee,
         search, setSearch,
         showSearch, setShowSearch,
-        cartItems,
+        cartItems, setCartItems,
         addToCart,
         updateCart,
         getCartCount,
         getCartAmount,
+        removeFromCart,
         clearCart,
         navigate,
-        backendUrl,
         token,
         setToken,
-        setCartItems,
         toggleSearch
     };
 

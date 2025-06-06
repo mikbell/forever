@@ -1,87 +1,89 @@
+// In backend/middleware/auth.js
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js"; // Importa il modello User per cercare l'utente
+import User from "../models/user.model.js";
 
-/**
- * Middleware di autenticazione per proteggere le rotte.
- * Verifica la presenza e la validità di un JWT token passato tramite cookie HTTP-only.
- * Se il token è valido, aggiunge l'oggetto utente (o solo l'ID) alla richiesta (req.user)
- * e passa al prossimo middleware/controller.
- * In caso contrario, risponde con un errore di autorizzazione.
- *
- * @param {object} req - Oggetto della richiesta Express.
- * @param {object} res - Oggetto della risposta Express.
- * @param {function} next - Funzione per passare al prossimo middleware.
- */
+// Funzione helper per inviare risposte di errore standardizzate
+const sendErrorResponse = (res, statusCode, message) => {
+	return res.status(statusCode).json({ success: false, message });
+};
+
+// Middleware di autenticazione generale
 const auth = async (req, res, next) => {
-	// 1. Recupera il token dal cookie 'jwt'
-	const token = req.cookies.jwt;
+	let token;
 
-	// 2. Verifica la presenza del token
+	// 1. Cerca il token nell'header Authorization (Bearer Token)
+	if (
+		req.headers.authorization &&
+		req.headers.authorization.startsWith("Bearer")
+	) {
+		token = req.headers.authorization.split(" ")[1];
+	}
+	// 2. Se non trovato nell'header, cerca nel cookie 'jwt'
+	if (!token && req.cookies && req.cookies.jwt) {
+		token = req.cookies.jwt;
+	}
+
 	if (!token) {
-		// Status 401 Unauthorized indica che l'autenticazione è richiesta ma non fornita o invalida.
-		return res
-			.status(401)
-			.json({ success: false, message: "Non autorizzato. Token non fornito." });
+		// Nessun token trovato
+		return sendErrorResponse(res, 401, "Non autorizzato. Token non fornito.");
 	}
 
 	try {
-		// 3. Verifica il token JWT
-		// jwt.verify è sincrono se non usi un callback. Se lo usi, diventa asincrono.
-		// È meglio usarlo in un blocco try-catch per gestire gli errori di verifica.
+		// Verifica il token
 		const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-		// Optional: 4. Trova l'utente nel database e allega l'oggetto utente alla richiesta
-		// Questo ti permette di accedere a `req.user` nei tuoi controller successivi.
-		// `select('-password')` esclude la password per sicurezza.
-		// `_id` è l'ID dell'utente nel payload del token.
+		// Trova l'utente basandosi sull'ID nel token, escludendo la password
 		const user = await User.findById(decodedToken.id).select("-password");
 
 		if (!user) {
-			// L'utente non esiste più nel DB (ad es. eliminato), ma il token è valido.
-			return res
-				.status(401)
-				.json({
-					success: false,
-					message: "Non autorizzato. Utente non trovato.",
-				});
+			// Utente non trovato nel database
+			return sendErrorResponse(
+				res,
+				401,
+				"Non autorizzato. Utente non trovato."
+			);
 		}
 
-		// Allega l'utente autenticato alla richiesta
+		// Allega l'utente e l'ID alla richiesta per i middleware e i controller successivi
 		req.user = user;
-		req.userId = user._id; // Comodo per accedere all'ID utente
+		req.userId = user._id;
 
-		// 5. Passa al prossimo middleware/controller
+		// Prosegui al prossimo middleware/controller
 		next();
 	} catch (err) {
-		// Gestione degli errori di verifica del token (es. token scaduto, non valido)
-		console.error("Errore di autenticazione JWT:", err.message);
-
-		// 403 Forbidden indica che il server ha capito la richiesta ma si rifiuta di autorizzarla.
-		// In questo caso, il token è stato fornito ma è invalido.
+		// Gestione specifica degli errori JWT
 		if (err.name === "TokenExpiredError") {
-			return res
-				.status(403)
-				.json({
-					success: false,
-					message: "Token scaduto. Effettua nuovamente il login.",
-				});
+			return sendErrorResponse(
+				res,
+				403,
+				"Token scaduto. Effettua nuovamente il login."
+			);
 		}
 		if (err.name === "JsonWebTokenError") {
-			return res
-				.status(403)
-				.json({
-					success: false,
-					message: "Token non valido. Non autorizzato.",
-				});
+			return sendErrorResponse(res, 403, "Token non valido. Non autorizzato.");
 		}
-		// Per tutti gli altri errori
-		return res
-			.status(500)
-			.json({
-				success: false,
-				message: "Errore server durante l'autenticazione.",
-			});
+		// Per altri errori generici, invia una risposta 500
+		console.error("Errore JWT durante l'autenticazione:", err.message);
+		return sendErrorResponse(
+			res,
+			500,
+			"Errore server durante l'autenticazione."
+		);
 	}
 };
 
-export default auth;
+// Middleware per l'autenticazione degli amministratori
+const adminAuth = (req, res, next) => {
+	// Questo middleware dovrebbe essere usato DOPO il middleware 'auth'
+	// in modo che req.user sia già popolato.
+	if (!req.user || !req.user.isAdmin) {
+		return sendErrorResponse(
+			res,
+			403,
+			"Accesso negato. Richiede privilegi di amministratore."
+		);
+	}
+	next();
+};
+
+export { auth, adminAuth };

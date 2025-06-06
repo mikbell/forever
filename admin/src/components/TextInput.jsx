@@ -19,9 +19,9 @@ const TextInput = React.forwardRef(({
 }, ref) => {
     // Stili base per l'input
     const baseInputStyles = `
-        block w-full px-4 py-2 text-base text-gray-800 bg-pink-50
+        block w-full px-4 py-2 text-base text-gray-800
         border border-gray-300
-        focus:outline-none focus:ring-1 focus:ring-pink-200 focus:border-pink-200
+        focus:outline-none focus:ring-1 focus:ring-blue-200 focus:border-blue-200 focus:bg-blue-50
         transition-colors duration-200 ease-in-out
         placeholder-gray-400
         disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed

@@ -14,7 +14,7 @@ const Navbar = ({ navbarRef }) => {
     const mobileMenuRef = useRef(null); // Nuovo riferimento per il menu mobile sidebar
 
     // Get necessary values from ShopContext
-    const { getCartCount, navigate, token, setToken, setCartItems, setShowSearch } = useContext(ShopContext);
+    const { getCartCount, navigate, token, setToken, setCartItems, toggleSearch } = useContext(ShopContext);
 
     // ---
     // ## Funzioni di Utilità
@@ -87,7 +87,6 @@ const Navbar = ({ navbarRef }) => {
     // ## Dati e Funzioni di Render
     // ---
 
-    // Navigation links for the main menu and mobile menu
     const navLinks = [
         { to: "/", text: "home" },
         { to: "/collection", text: "collezione" },
@@ -95,21 +94,19 @@ const Navbar = ({ navbarRef }) => {
         { to: "/contact", text: "contattaci" },
     ];
 
-    // Dynamic profile dropdown actions based on authentication status
-    // Memoizzata con useCallback per evitare ricreazione ad ogni render
     const getProfileActions = useCallback(() => {
         if (token) {
             // User is logged in
             return [
                 { label: "Il mio profilo", href: "/profile" },
                 { label: "Ordini", href: "/orders" },
-                { label: "Logout", action: logout }, // Usa la funzione di logout memoizzata
+                { label: "Logout", action: logout },
             ];
         } else {
             // User is logged out
             return [
-                { label: "Login", href: "/auth?mode=login" }, // Link to your combined Auth page
-                { label: "Registrati", href: "/auth?mode=register" }, // Link to your combined Auth page
+                { label: "Login", href: "/auth?mode=login" },
+                { label: "Registrati", href: "/auth?mode=register" },
             ];
         }
     }, [token, logout]); // Dipende dal token e dalla funzione logout
@@ -139,7 +136,7 @@ const Navbar = ({ navbarRef }) => {
 
                 <div className="flex items-center gap-3 sm:gap-4">
                     <button
-                        onClick={() => setShowSearch(true)}
+                        onClick={() => toggleSearch()}
                         type="button"
                         aria-label="Cerca nel sito"
                         className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 cursor-pointer"

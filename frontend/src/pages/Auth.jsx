@@ -107,8 +107,6 @@ const Auth = () => {
 
       if (response.data.success) {
         setToken(response.data.token);
-        // Il token è già salvato in localStorage nel ShopContext (useEffect in ShopContextProvider)
-        toast.success(response.data.message);
         navigate('/');
       } else {
         // Gestione specifica degli errori dal backend (es. email già registrata, credenziali errate)
@@ -151,7 +149,6 @@ const Auth = () => {
   useEffect(() => {
     if (token) {
       navigate('/');
-      toast.info('Sei già loggato.'); // Messaggio informativo per l'utente
     }
   }, [token, navigate]); // Dipende da token e navigate
 

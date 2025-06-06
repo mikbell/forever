@@ -7,12 +7,13 @@ import {
 	deleteProduct,
 } from "../controllers/product.controller.js";
 import upload from "../middleware/multer.js";
-import adminAuth from "../middleware/adminAuth.js";
+import { auth, adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.post(
 	"/create",
+	auth,
 	adminAuth,
 	upload.fields([
 		{ name: "image1", maxCount: 1 },
@@ -20,13 +21,13 @@ router.post(
 		{ name: "image3", maxCount: 1 },
 		{ name: "image4", maxCount: 1 },
 	]),
-	createProduct 
+	createProduct
 );
 
 // Other product routes (example)
 router.get("/", getProducts);
 router.get("/:id", getProduct);
-router.put("/update/:id", adminAuth, updateProduct);
-router.delete("/delete/:id", adminAuth, deleteProduct);
+router.put("/update/:id", auth, adminAuth, updateProduct);
+router.delete("/delete/:id", auth, adminAuth, deleteProduct);
 
 export default router;

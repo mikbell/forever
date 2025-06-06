@@ -139,14 +139,12 @@ const Contact = () => {
               id="contactMessage"
               name="message"
               label="Messaggio"
-              type="textarea" // Use type='textarea' for multi-line input
+              type="textarea"
               placeholder="Scrivi qui il tuo messaggio..."
               value={formData.message}
               onChange={handleChange}
               error={formErrors.message}
               disabled={isSubmitting}
-            // Add rows for textarea, if TextInput supports it
-            // rows={5}
             />
             <Button
               type="submit"

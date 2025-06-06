@@ -90,7 +90,6 @@ const Cart = () => {
   // Funzione per gestire il click sul pulsante di rimozione (memoizzata)
   const handleRemoveItem = useCallback((itemId, size) => {
     removeFromCart(itemId, size);
-    toast.info('Articolo rimosso dal carrello.');
   }, [removeFromCart]);
 
   // Funzione per procedere al checkout (memoizzata)
