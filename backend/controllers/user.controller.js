@@ -34,37 +34,11 @@ const sendErrorResponse = (res, statusCode, message) => {
 	return res.status(statusCode).json({ success: false, message });
 };
 
-// Middleware/funzione di validazione per i campi richiesti
-const validateRequiredFields = (fields, data, res) => {
-	for (const field of fields) {
-		if (!data[field]) {
-			sendErrorResponse(
-				res,
-				400,
-				`${field.charAt(0).toUpperCase() + field.slice(1)} è obbligatorio.`
-			);
-			return false;
-		}
-	}
-	return true;
-};
-
-// Middleware/funzione di validazione per il formato email
-const validateEmailFormat = (email, res) => {
-	if (!validator.isEmail(email)) {
-		sendErrorResponse(res, 400, "Formato email non valido.");
-		return false;
-	}
-	return true;
-};
-
 // Controller per il login utente
 export const login = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		// Le validazioni sono ora gestite dai middleware prima di questo controller
-		// quindi non abbiamo più i controlli !email || !password o !validator.isEmail(email) qui.
 
 		const user = await User.findOne({ email });
 
@@ -79,7 +53,6 @@ export const login = async (req, res) => {
 		res.status(200).json({
 			success: true,
 			message: "Login effettuato con successo.",
-			token,
 			user: {
 				_id: user._id,
 				name: user.name,
@@ -128,7 +101,6 @@ export const register = async (req, res) => {
 		res.status(201).json({
 			success: true,
 			message: "Registrazione e login effettuati con successo.",
-			token,
 			user: {
 				_id: newUser._id,
 				name: newUser.name,
@@ -164,8 +136,6 @@ export const adminLogin = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		// Le validazioni sono ora gestite dai middleware prima di questo controller.
-
 		const user = await User.findOne({ email });
 
 		if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -185,7 +155,6 @@ export const adminLogin = async (req, res) => {
 		res.status(200).json({
 			success: true,
 			message: "Accesso amministratore effettuato con successo.",
-			token,
 			user: {
 				_id: user._id,
 				name: user.name,

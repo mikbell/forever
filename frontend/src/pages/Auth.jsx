@@ -1,10 +1,20 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react'; // Importa useCallback
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import { ShopContext } from '../context/ShopContext';
+import apiClient from '../api/axios.js';
 import axios from 'axios';
+
+// Mappa gli errori comuni del backend a messaggi frontend più amichevoli
+const backendErrorMessages = {
+  'Email already registered': 'Questa email è già registrata.',
+  'Invalid credentials': 'Credenziali non valide.',
+  'Nome obbligatorio': 'Il nome è obbligatorio.',
+  'Email non valida': 'L\'email fornita non è valida.',
+  'Password troppo corta': 'La password deve contenere almeno 6 caratteri.',
+};
 
 const Auth = () => {
   // Form states
@@ -22,16 +32,14 @@ const Auth = () => {
 
   // Inizializza con 'Login' o 'Register' basandosi sul parametro URL
   const [searchParams] = useSearchParams();
-  // Utilizza una funzione per l'inizializzazione dello stato per garantire che venga eseguita solo una volta
   const [currentState, setCurrentState] = useState(() => {
     const initialMode = searchParams.get('mode');
     return initialMode === 'register' ? 'Register' : 'Login';
   });
 
   // Context values
-  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+  const { token, setToken, navigate } = useContext(ShopContext);
 
-  // Utilizza useCallback per memoizzare la funzione e prevenire re-rendering inutili
   const resetForm = useCallback(() => {
     setName('');
     setEmail('');
@@ -39,22 +47,16 @@ const Auth = () => {
     setNameError('');
     setEmailError('');
     setPasswordError('');
-    // Non resettare isLoading qui, è gestito dal handleSubmit
-  }, []); // Non ha dipendenze, quindi non cambierà mai
+  }, []);
 
-  // Gestore per il cambio di stato (Login/Register)
-  // Utilizza useCallback per memoizzare la funzione
   const toggleAuthState = useCallback((state) => {
     setCurrentState(state);
-    resetForm(); // Resetta il form quando si cambia modalità
-    // Aggiorna l'URL per riflettere la modalità
+    resetForm();
     navigate(`/auth?mode=${state.toLowerCase()}`, { replace: true });
-  }, [resetForm, navigate]); // Dipende da resetForm e navigate
+  }, [resetForm, navigate]);
 
-  // Frontend form validation
   const validateForm = useCallback(() => {
     let isValid = true;
-    // Resetta tutti gli errori prima di validare
     setNameError('');
     setEmailError('');
     setPasswordError('');
@@ -81,13 +83,11 @@ const Auth = () => {
     }
 
     return isValid;
-  }, [name, email, password, currentState]); // Dipende dagli stati del form e dal currentState
+  }, [name, email, password, currentState]);
 
-  // Handles form submission (Login or Register)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Esegui la validazione frontend
     if (!validateForm()) {
       toast.error('Compila tutti i campi obbligatori e correggi gli errori.');
       return;
@@ -98,46 +98,66 @@ const Auth = () => {
     try {
       let response;
       const payload = { email, password };
+      const axiosConfig = {
+        withCredentials: true // Abilita l'invio e la ricezione di cookie cross-origin
+      };
+
       if (currentState === 'Register') {
-        payload.name = name; // Aggiungi il nome solo per la registrazione
-        response = await axios.post(`${backendUrl}/api/user/register`, payload); // Rimosso withCredentials se non gestisci sessioni basate su cookie
+        payload.name = name;
+        response = await apiClient.post(`/api/user/register`, payload, axiosConfig);
       } else {
-        response = await axios.post(`${backendUrl}/api/user/login`, payload); // Rimosso withCredentials
+        response = await apiClient.post(`/api/user/login`, payload, axiosConfig);
       }
 
       if (response.data.success) {
-        setToken(response.data.token);
+        // Se il token è nel corpo della risposta (non un cookie httpOnly), salvalo.
+        // Se è un cookie httpOnly, il browser lo gestirà automaticamente e non lo troverai qui.
+        if (response.data.token) {
+          setToken(response.data.token);
+        }
+        toast.success(response.data.message || `${currentState} avvenuto con successo!`);
         navigate('/');
       } else {
-        // Gestione specifica degli errori dal backend (es. email già registrata, credenziali errate)
-        if (response.data.message.includes('Email already registered')) {
-          setEmailError('Questa email è già registrata.');
-        } else if (response.data.message.includes('Invalid credentials')) {
-          setEmailError('Credenziali non valide.');
-          setPasswordError('Credenziali non valide.');
+        // Gestione degli errori dal backend usando la mappa
+        const backendMsg = response.data.message;
+        const mappedError = backendErrorMessages[backendMsg] || backendMsg; // Usa il messaggio mappato o quello originale
+        toast.error(mappedError);
+
+        // Imposta errori specifici sui campi, se il backend restituisce messaggi dettagliati
+        if (backendMsg === 'Email already registered' || backendMsg.includes('email')) {
+          setEmailError(mappedError);
         }
-        toast.error(response.data.message);
+        if (backendMsg.includes('credentials') || backendMsg.includes('password')) {
+          setPasswordError(mappedError);
+          setEmailError(mappedError); // Anche l'email può essere parte delle credenziali non valide
+        }
+        if (backendMsg.includes('Nome obbligatorio') || backendMsg.includes('name')) {
+          setNameError(mappedError);
+        }
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error('Backend Error:', error.response.data);
-        // Puoi aggiungere una logica più specifica per gli errori 400, 401, ecc.
-        if (error.response.status === 400 && error.response.data.message) {
-          // Esempio: se il backend invia errori di validazione specifici nel messaggio
-          if (error.response.data.message.includes('Email non valida')) {
-            setEmailError('Email non valida.');
-          } else if (error.response.data.message.includes('Password troppo corta')) {
-            setPasswordError('Password troppo corta.');
-          } else if (error.response.data.message.includes('Nome obbligatorio')) {
-            setNameError('Il nome è obbligatorio.');
+        const backendMsg = error.response.data.message;
+        const mappedError = backendErrorMessages[backendMsg] || backendMsg;
+
+        if (error.response.status === 400 && backendMsg) {
+          if (backendMsg.includes('email')) {
+            setEmailError(mappedError);
+          }
+          if (backendMsg.includes('password') || backendMsg.includes('Credenziali non valide')) {
+            setPasswordError(mappedError);
+          }
+          if (backendMsg.includes('name')) {
+            setNameError(mappedError);
           }
         }
-        toast.error(error.response.data.message || 'Errore dal server.');
+        toast.error(mappedError || 'Errore dal server.');
       } else if (axios.isAxiosError(error) && error.request) {
-        console.error('Network Error:', error.request);
+        console.error('Errore di rete:', error.request);
         toast.error('Errore di rete. Controlla la tua connessione.');
       } else {
-        console.error('General Error:', error.message);
+        console.error('Errore generico:', error.message);
         toast.error('Si è verificato un errore inaspettato.');
       }
     } finally {
@@ -145,23 +165,20 @@ const Auth = () => {
     }
   };
 
-  // Effect to redirect if token is present (user is already logged in)
   useEffect(() => {
     if (token) {
       navigate('/');
     }
-  }, [token, navigate]); // Dipende da token e navigate
+  }, [token, navigate]);
 
-  // Effect to update currentState if URL parameter changes
   useEffect(() => {
     const modeFromUrl = searchParams.get('mode');
-    // Aggiorna lo stato solo se è diverso, per evitare loop o re-rendering inutili
     if (modeFromUrl === 'register' && currentState !== 'Register') {
       toggleAuthState('Register');
     } else if (modeFromUrl !== 'register' && currentState !== 'Login') {
       toggleAuthState('Login');
     }
-  }, [searchParams, currentState, toggleAuthState]); // Dipende da searchParams, currentState e toggleAuthState (memoizzata)
+  }, [searchParams, currentState, toggleAuthState]);
 
   return (
     <div className='container mx-auto px-4 py-8 md:py-12 min-h-[80vh] flex items-center justify-center'>

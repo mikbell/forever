@@ -1,4 +1,4 @@
-// backend/middleware/validation.js
+// backend/validation/user.js
 import { body, validationResult } from "express-validator";
 
 // Funzione helper per inviare la prima risposta di errore trovata
@@ -12,8 +12,22 @@ const handleValidationErrors = (req, res, next) => {
 	next();
 };
 
+const loginValidation = [
+	body("email")
+		.notEmpty()
+		.withMessage("Email è obbligatoria per il login.")
+		.isEmail()
+		.withMessage("Formato email non valido per il login."),
+
+	body("password")
+		.notEmpty()
+		.withMessage("Password è obbligatoria per il login."),
+
+	handleValidationErrors,
+];
+
 // Array di validatori per la rotta di registrazione
-const validateRegistration = [
+const registerValidation = [
 	// L'email non deve essere vuota e deve essere in formato valido
 	body("email")
 		.notEmpty()
@@ -37,4 +51,4 @@ const validateRegistration = [
 	handleValidationErrors,
 ];
 
-export { validateRegistration };
+export { loginValidation, registerValidation };

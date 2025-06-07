@@ -25,8 +25,8 @@ router.post(
 );
 
 // Other product routes (example)
-router.get("/", getProducts);
-router.get("/:id", getProduct);
+router.get("/get", getProducts);
+// router.get("/get/:id", getProduct);
 router.put("/update/:id", auth, adminAuth, updateProduct);
 router.delete("/delete/:id", auth, adminAuth, deleteProduct);
 

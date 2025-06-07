@@ -3,7 +3,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import { Package, CalendarDays, CreditCard, MapPin, RefreshCw } from 'lucide-react';
-import apiClient from '../../api/axios';
+import apiClient from '../api/axios';
 import { toast } from 'react-toastify'; // Aggiunto per feedback errori
 import { Link } from 'react-router-dom';
 

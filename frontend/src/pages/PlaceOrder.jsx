@@ -5,7 +5,7 @@ import CartTotal from '../components/CartTotal';
 import { assets } from '../assets/assets';
 import Button from '../components/Button';
 import { ShopContext } from '../context/ShopContext';
-import apiClient from '../../api/axios';
+import apiClient from '../api/axios';
 import { toast } from 'react-toastify';
 
 const PlaceOrder = () => {
@@ -38,7 +38,7 @@ const PlaceOrder = () => {
   useEffect(() => {
     if (!token) {
       toast.info("Effettua il login per procedere con l'ordine.");
-      navigate('/login');
+      navigate('/auth?mode=login');
     } else if (getCartAmount() === 0) {
       toast.info("Il tuo carrello è vuoto.");
       navigate('/cart');

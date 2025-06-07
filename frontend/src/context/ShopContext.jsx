@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../../api/axios.js'; // Importa la tua istanza Axios configurata
+import apiClient from '../api/axios.js'; // Importa la tua istanza Axios configurata
 
 export const ShopContext = createContext();
 
@@ -31,7 +31,7 @@ const ShopContextProvider = (props) => {
     // Funzione per recuperare i prodotti dal backend
     const getProductsData = async () => {
         try {
-            const response = await apiClient.get(`/api/product`);
+            const response = await apiClient.get(`/api/product/get`);
             if (response.data.success) {
                 setProducts(response.data.products);
             } else {
@@ -40,7 +40,7 @@ const ShopContextProvider = (props) => {
             }
         } catch (error) {
             console.error("Errore di rete durante il caricamento dei prodotti:", error);
-            toast.error(error);
+            toast.error("Errore di rete durante il caricamento dei prodotti.");
             return [];
         }
     };

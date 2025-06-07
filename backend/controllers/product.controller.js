@@ -14,7 +14,7 @@ export const getProducts = async (req, res) => {
 		console.error("Error fetching products:", error);
 		res
 			.status(500)
-			.json({ success: false, message: "Server error fetching products." });
+			.json({ success: false, message: "Errore nel recupero dei prodotti." });
 	}
 };
 
@@ -32,7 +32,7 @@ export const getProduct = async (req, res) => {
 		if (!product) {
 			return res
 				.status(404)
-				.json({ success: false, message: "Product not found." });
+				.json({ success: false, message: "Prodotto non trovato." });
 		}
 
 		// Respond with success and the found product
@@ -43,7 +43,7 @@ export const getProduct = async (req, res) => {
 		// L'errore ObjectId.kind è ora gestito dal middleware di validazione
 		res
 			.status(500)
-			.json({ success: false, message: "Server error fetching product." });
+			.json({ success: false, message: "Errore nel recupero del prodotto." });
 	}
 };
 
@@ -69,13 +69,13 @@ export const createProduct = async (req, res) => {
 		) {
 			return res
 				.status(400)
-				.json({ success: false, message: "Missing required product fields." });
+				.json({ success: false, message: "Dati mancanti o non validi." });
 		}
 
 		if (isNaN(price) || parseFloat(price) <= 0) {
 			return res
 				.status(400)
-				.json({ success: false, message: "Price must be a positive number." });
+				.json({ success: false, message: "Prezzo non valido." });
 		}
 
 		const isBestseller =
@@ -108,16 +108,13 @@ export const createProduct = async (req, res) => {
 		const uploadedImageUrls = [];
 		const imageFields = ["image1", "image2", "image3", "image4"]; // Nomi dei campi attesi da Multer
 
-		// Debugging: Controlla cosa Multer ha allegato a req.files
-		console.log("req.files received by controller:", req.files);
-
 		if (!req.files || Object.keys(req.files).length === 0) {
 			console.error(
-				"No files found in req.files. Multer might not be processing uploads."
+				"Errore: Nessun file immagine caricato o processato dal server."
 			);
 			return res.status(400).json({
 				success: false,
-				message: "No image files uploaded or processed by server.",
+				message: "Nessun file immagine caricato o processato dal server.",
 			});
 		}
 
@@ -127,7 +124,7 @@ export const createProduct = async (req, res) => {
 
 				// Check if buffer is available (for memoryStorage)
 				if (!file.buffer) {
-					console.error(`Error: file.buffer is missing for ${fieldName}.`);
+					console.error(`Nessun buffer trovato per ${fieldName}.`);
 					continue;
 				}
 
@@ -142,11 +139,11 @@ export const createProduct = async (req, res) => {
 					});
 					uploadedImageUrls.push(result.secure_url);
 					console.log(
-						`Successfully uploaded ${fieldName} to Cloudinary: ${result.secure_url}`
+						`Immagine ${fieldName} caricata con URL: ${result.secure_url}`
 					);
 				} catch (uploadError) {
 					console.error(
-						`Error uploading image ${fieldName} to Cloudinary:`,
+						`Errore nell'upload dell'immagine ${fieldName} su Cloudinary:`,
 						uploadError
 					);
 				}
@@ -154,10 +151,10 @@ export const createProduct = async (req, res) => {
 		}
 
 		if (uploadedImageUrls.length === 0) {
-			console.error("No images were successfully uploaded to Cloudinary.");
+			console.error("Nessuna immagine caricata con successo.");
 			return res.status(400).json({
 				success: false,
-				message: "At least one product image must be successfully uploaded.",
+				message: "Almeno una immagine deve essere caricata.",
 			});
 		}
 		// --- FINE FIX PER IMMAGINI ---
@@ -176,14 +173,14 @@ export const createProduct = async (req, res) => {
 
 		res.status(201).json({
 			success: true,
-			message: "Product created successfully",
+			message: "Prodotto creato con successo.",
 			product: newProduct,
 		});
 	} catch (error) {
-		console.error("Server error creating product:", error);
+		console.error("Errore nella creazione del prodotto:", error);
 		res.status(500).json({
 			success: false,
-			message: "Server error creating product",
+			message: "Errore nella creazione del prodotto.",
 			error: error.message,
 		});
 	}
@@ -200,12 +197,6 @@ export const updateProduct = async (req, res) => {
 		// I dati sono già stati validati e formattati dal middleware
 		const updateData = req.body;
 
-		// Se l'aggiornamento include nuove immagini, la logica di upload andrebbe qui,
-		// simile a `createProduct`.
-		// Assicurati che `productImagesUpload` sia applicato anche a questa rotta se necessario.
-
-		// Find and update the product. `new: true` returns the updated document.
-		// `runValidators: true` ensures schema validators run on update operations.
 		const product = await Product.findByIdAndUpdate(productId, updateData, {
 			new: true,
 			runValidators: true, // Important for Mongoose schema validation on updates
@@ -215,21 +206,21 @@ export const updateProduct = async (req, res) => {
 		if (!product) {
 			return res
 				.status(404)
-				.json({ success: false, message: "Product not found." });
+				.json({ success: false, message: "Prodotto non trovato." });
 		}
 
 		// Respond with success and the updated product
 		res.status(200).json({
 			success: true,
-			message: "Product updated successfully",
+			message: "Prodotto aggiornato con successo.",
 			product,
 		});
 	} catch (error) {
-		console.error("Error updating product:", error);
+		console.error("Errore nell'aggiornamento del prodotto:", error);
 		// Gli errori ObjectId.kind e ValidationError sono ora gestiti dal middleware di validazione
 		res.status(500).json({
 			success: false,
-			message: "Server error updating product",
+			message: "Errore nell'aggiornamento del prodotto.",
 			error: error.message,
 		});
 	}
@@ -251,7 +242,7 @@ export const deleteProduct = async (req, res) => {
 		if (!product) {
 			return res
 				.status(404)
-				.json({ success: false, message: "Product not found." });
+				.json({ success: false, message: "Prodotto non trovato." });
 		}
 
 		// Delete images from Cloudinary if they exist
@@ -260,13 +251,12 @@ export const deleteProduct = async (req, res) => {
 				const publicId = imageUrl.split("/").pop().split(".")[0];
 				try {
 					await cloudinary.uploader.destroy(`e-commerce-products/${publicId}`);
-					console.log(`Deleted image ${publicId} from Cloudinary.`);
+					console.log(`Immagine ${publicId} eliminata da Cloudinary.`);
 				} catch (cloudinaryError) {
 					console.error(
-						`Failed to delete image ${publicId} from Cloudinary:`,
+						`Errore nell'eliminazione dell'immagine ${publicId} da Cloudinary:`,
 						cloudinaryError
 					);
-					// Continua l'esecuzione anche se una singola immagine non viene eliminata da Cloudinary
 				}
 			}
 		}
@@ -274,13 +264,13 @@ export const deleteProduct = async (req, res) => {
 		// Respond with success message
 		res
 			.status(200)
-			.json({ success: true, message: "Product deleted successfully." });
+			.json({ success: true, message: "Prodotto eliminato con successo." });
 	} catch (error) {
-		console.error("Error deleting product:", error);
+		console.error("Errore nell'eliminazione del prodotto:", error);
 		// L'errore ObjectId.kind è ora gestito dal middleware di validazione
 		res.status(500).json({
 			success: false,
-			message: "Server error deleting product",
+			message: "Errore nell'eliminazione del prodotto.",
 			error: error.message,
 		});
 	}
