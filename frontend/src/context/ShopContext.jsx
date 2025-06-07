@@ -40,7 +40,7 @@ const ShopContextProvider = (props) => {
             }
         } catch (error) {
             console.error("Errore di rete durante il caricamento dei prodotti:", error);
-            toast.error(error.message);
+            toast.error(error);
             return [];
         }
     };
