@@ -35,40 +35,33 @@ const ShopContextProvider = (props) => {
             if (response.data.success) {
                 setProducts(response.data.products);
             } else {
-                // Logga l'errore per il debug e mostra un toast all'utente
                 console.error("Errore nel caricamento dei prodotti:", response.data.message);
                 toast.error(`Errore nel caricamento dei prodotti: ${response.data.message}`);
             }
         } catch (error) {
-            console.error("Network error fetching products:", error);
-            // Mostra un messaggio di errore generico per problemi di rete
-            toast.error("Errore di rete durante il caricamento dei prodotti.");
-            // Potresti voler restituire un array vuoto o lanciare l'errore a seconda della gestione desiderata
+            console.error("Errore di rete durante il caricamento dei prodotti:", error);
+            toast.error(error.message);
             return [];
         }
     };
 
 
-    // Effetto per caricare i prodotti all'avvio del componente
     useEffect(() => {
         getProductsData();
-    }, []); // Array di dipendenze vuoto per eseguirlo una sola volta al mount
+    }, []);
 
-    // Effetto per gestire il token e caricare il carrello quando il token cambia
     useEffect(() => {
-        // Quando il componente si monta o il token cambia, carichiamo il carrello
         if (token) {
-            localStorage.setItem('token', token); // Salva il token nel localStorage se presente
+            localStorage.setItem('token', token);
             getCart(token);
         } else {
-            localStorage.removeItem('token'); // Rimuovi il token se l'utente si è sloggato
+            localStorage.removeItem('token');
             setCartItems({});
         }
     }, [token,]);
 
-
     // ---
-    // ## Funzioni di Gestione Carrello (Locale e Backend)
+    // ## Carrello
     // ---
 
     const getCart = async (userToken) => {
@@ -126,8 +119,6 @@ const ShopContextProvider = (props) => {
 
     const updateCart = async (itemId, size, quantity) => {
         const currentCart = structuredClone(cartItems);
-
-        // Validazione della quantità
         const parsedQuantity = parseInt(quantity, 10);
         if (isNaN(parsedQuantity) || parsedQuantity < 0) {
             toast.error("Quantità non valida. Deve essere un numero non negativo.");
@@ -142,23 +133,21 @@ const ShopContextProvider = (props) => {
                 }
             }
         } else {
-            // Assicurati che l'oggetto per l'articolo esista
             if (!currentCart[itemId]) {
                 currentCart[itemId] = {};
             }
             currentCart[itemId][size] = parsedQuantity;
         }
 
-        setCartItems(currentCart); // Aggiorna lo stato locale
+        setCartItems(currentCart);
 
         if (token) {
             try {
-                // Manda l'aggiornamento della quantità al backend
                 await apiClient.post(`/api/cart/update`, { itemId, size, quantity: parsedQuantity },);
             } catch (error) {
                 console.error("Error updating item quantity in backend:", error);
                 toast.error("Errore durante l'aggiornamento della quantità sul server.");
-                getCart(token); // Ricarica il carrello dal backend per assicurare consistenza
+                getCart(token);
             }
         }
     };

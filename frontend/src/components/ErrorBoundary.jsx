@@ -23,7 +23,7 @@ class ErrorBoundary extends React.Component {
 		if (this.state.hasError) {
 			// Puoi renderizzare qualsiasi UI di fallback personalizzata
 			return (
-				<div className="flex flex-col items-center justify-center h-screen bg-red-100 text-red-800 p-6 rounded-lg shadow-xl m-4">
+				<div className="flex flex-col items-center justify-center h-screen bg-red-100 text-red-800 p-6 rounded-lg shadow-xl">
 					<h1 className="text-3xl font-bold mb-4 text-red-900">
 						Qualcosa è andato storto!
 					</h1>
