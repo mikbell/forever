@@ -5,10 +5,10 @@ import Button from './Button'; // Importa il tuo componente Button riutilizzabil
 // potrebbe essere import Button from '../components/Button';
 
 const NewsletterBox = ({
-    title = "Subscribe now and get 20% off",
-    description = "Be the first to know about our new arrivals, exclusive offers, and get a special discount on your next purchase.",
-    placeholderText = "Enter your email address",
-    buttonText = "Subscribe",
+    title = "Iscriviti e risparmia il 20%",
+    description = "Iscriviti alla nostra newsletter per ricevere le ultime offerte e promozioni.",
+    placeholderText = "Inserisci la tua email",
+    buttonText = "Iscriviti",
     onSubmitForm,
     className = "",
 }) => {

@@ -21,8 +21,8 @@ const LatestCollection = () => {
         <section className="my-12 py-8 sm:my-16 sm:py-12 px-4 sm:px-6 lg:px-8" aria-labelledby="latest-collection-title">
             <div className="text-center mb-10 md:mb-14">
                 <Title
-                    text1={"Our Latest"}
-                    text2={"Collections"}
+                    text1={"Le nostre ultime"}
+                    text2={"Collezioni"}
                     as="h2"
                     id="latest-collection-title"
                 />

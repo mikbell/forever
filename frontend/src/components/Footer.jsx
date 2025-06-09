@@ -8,7 +8,7 @@ const Footer = () => {
     const companyLinks = [
         { name: "Home", path: "/" },
         { name: "Chi siamo", path: "/about" },
-        { name: "Delivery", path: "/delivery" },
+        { name: "Spedizione", path: "/delivery" },
         { name: "Privacy policy", path: "/privacy" },
     ];
 
@@ -34,7 +34,7 @@ const Footer = () => {
                     </div>
 
                     <div className="md:col-span-6 lg:col-span-3">
-                        <h3 className='text-base font-semibold text-gray-900 mb-4 uppercase tracking-wider'>Company</h3>
+                        <h3 className='text-base font-semibold text-gray-900 mb-4 uppercase tracking-wider'>Compagnia</h3>
                         <ul className='flex flex-col gap-2.5 text-sm'>
                             {companyLinks.map(link => (
                                 <li key={link.name}>
@@ -47,7 +47,7 @@ const Footer = () => {
                     </div>
 
                     <div className="md:col-span-6 lg:col-span-4">
-                        <h3 className='text-base font-semibold text-gray-900 mb-4 uppercase tracking-wider'>Get in touch</h3>
+                        <h3 className='text-base font-semibold text-gray-900 mb-4 uppercase tracking-wider'>Contatti</h3>
                         <ul className='flex flex-col gap-2.5 text-sm'>
                             {contactInfo.map(contact => (
                                 <li key={contact.text}>

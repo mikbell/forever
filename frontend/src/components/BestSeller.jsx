@@ -18,8 +18,8 @@ const BestSeller = () => {
         <section className="my-12 py-8 sm:my-16 sm:py-12 px-4 sm:px-6 lg:px-8" aria-labelledby="bestseller-section-title">
             <div className="text-center mb-10 md:mb-14">
                 <Title
-                    text1={"Our"}
-                    text2={"Best Sellers"}
+                    text1={"I nostri"}
+                    text2={"Best Seller"}
                     as="h2" 
                     id="bestseller-section-title" 
                 />

@@ -11,14 +11,14 @@ const Hero = () => {
                 <div className="max-w-md text-[#414141]">
                     <div className="flex items-center justify-center sm:justify-start gap-3 mb-3">
                         <span className='w-10 md:w-12 h-0.5 bg-[#414141]'></span> {/* Linea decorativa */}
-                        <p className='uppercase font-medium text-xs md:text-sm tracking-wider'>Our Bestsellers</p>
+                        <p className='uppercase font-medium text-xs md:text-sm tracking-wider'>I nostri best seller</p>
                     </div>
 
                     <h1
                         id="hero-main-title"
                         className='text-4xl sm:text-5xl lg:text-6xl py-2 sm:py-3 prata-regular leading-tight'
                     >
-                        Latest Arrivals
+                        Ultimi Arrivi
                     </h1>
 
                     <div className='mt-4 sm:mt-6'>
@@ -39,7 +39,7 @@ const Hero = () => {
                                        text-sm md:text-base 
                                        group"
                         >
-                            Shop now
+                            Scopri di più
                         </Button>
                     </div>
                 </div>

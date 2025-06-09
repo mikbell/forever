@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ArrowsUpDownIcon, BoltIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import { ArrowDownUp, Truck, Headset } from "lucide-react";
 
 const PolicyItem = ({ IconComponent, title, description }) => {
     return (
@@ -28,21 +28,21 @@ const OurPolicy = ({ title }) => {
     const policiesData = [
         {
             id: 'exchange',
-            icon: ArrowsUpDownIcon,
-            title: "Easy Exchange Policy",
-            description: "We offer a hassle-free exchange policy for your convenience."
+            icon: ArrowDownUp,
+            title: "Politica di Cambio Facile",
+            description: "Offriamo una politica di cambio senza problemi per la tua comodità."
         },
         {
             id: 'shipping',
-            icon: BoltIcon,
-            title: "Fast & Free Shipping",
-            description: "Enjoy free shipping on all orders over a certain amount."
+            icon: Truck,
+            title: "Spedizione Veloce e Gratuita",
+            description: "Goditi la spedizione gratuita su tutti gli ordini superiori a un certo importo."
         },
         {
             id: 'support',
-            icon: ChatBubbleOvalLeftEllipsisIcon,
-            title: "24/7 Customer Support",
-            description: "Our dedicated team is here to assist you around the clock."
+            icon: Headset,
+            title: "Supporto Clienti 24/7",
+            description: "Il nostro team dedicato è qui per assisterti 24 ore su 24, 7 giorni su 7."
         },
     ];
 
